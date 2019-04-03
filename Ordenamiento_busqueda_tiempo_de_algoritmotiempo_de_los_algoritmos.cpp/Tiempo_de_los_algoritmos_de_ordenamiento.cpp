@@ -4,10 +4,26 @@
 #include<cstdlib>
 #include<cstring>
 #include <iostream>
-int N=10000000;
+int const N=100000000;
 int *TB;
 int *TA;
+int a[N];
 typedef void(*fun_sort)(int *, int);
+void merge(int* A,int i,int m,int j){
+	int b = i, d = m+1, c = 0;
+	while(b <= m && d <= j){
+		if(A[b]>=A[d]){
+			a[c]=A[d];
+			d++;c++;
+		}
+		else {
+			a[c]=A[b];
+			b++;c++;
+		}}
+	while(b <= m)a[c++]=A[b++];
+	while(d <= j)a[c++]=A[d++];
+		memcpy(A+i,a,sizeof(int)*(j-i+1));
+		}
 bool test_sort(fun_sort sort,const int *A, int n){
 	memcpy(TA,A,sizeof(int)*n);
 	memcpy(TB,A,sizeof(int)*n);
@@ -79,18 +95,29 @@ void insert(int *A,int n){
         A[j+1]=ext;
         }
 	}
+void merge(int* A,int i,int j){
+	if(i==j )return;
+	int m=(i+j)/2;
+	merge(A,i,m);
+	merge(A,m+1,j);
+	merge(A,i,m,j);
+	
+}
+void merge(int* A, int n){
+	merge( A,0,n-1);
+}
 using namespace std;
 int main() {
 	srand(time(NULL));
 	int *A= new int[N];
 	TA=new int [N];
 	TB=new int [N];
-	fun_sort sort[3]={bubble,insert,selection};
+	fun_sort sort[4]={bubble,insert,selection,merge};
 	for(int n=100;n<=N;n*=10){
 		for(int i=0;i<n;i++)
 			A[i]=rand()%n;
 		cout<<n<<" ";
-		for(int s=0;s<3;s++){
+		for(int s=0;s<4;s++){
 			if(!test_sort(sort[s],A,n)){
 				cout<<"Fail\n";
 				return 0;
